@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\OrderItem;
+use App\Models\Restaurant;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,11 +15,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Restaurant::factory(10)->hasMenuItems(rand(5, 30))->create();
+        $this->command->info('Restaurant Seeder Completed');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::factory(100)->hasOrders(rand(1, 100))->create();
+        $this->command->info('User Seeder Completed');
+
+        OrderItem::factory(200)->create();
+        $this->command->info('Order Items Seeder Completed');
     }
 }

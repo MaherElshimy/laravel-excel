@@ -4,12 +4,22 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
+
+    const HEADINGS = [
+        'id' => '#',
+        'name' => 'Name',
+        'email' => 'Email Address',
+        'phone_no' => 'Phone Number',
+        'address' => 'Address'
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -20,6 +30,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone_no',
+        'address'
     ];
 
     /**
@@ -30,18 +42,30 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'email_verified_at',
+        'created_at',
+        'updated_at'
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    /**
+     * User Orders
+     * @return HasMany
+     */
+    public function orders(): HasMany
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(
+            Order::class,
+            'user_id',
+            'id'
+        );
     }
 }
